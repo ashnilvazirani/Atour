@@ -56,6 +56,9 @@ const tourSchema = new mongoose.Schema({
     },
     startDates: [Date],
 });
-
+tourSchema.virtual('durationWeeks').get(function () {
+    return this.duration / 7;
+});
+//Using the regular function instead of arrow function since we need access to 'this' keyword to point to current object
 const Tour = mongoose.model('Tour', tourSchema);
 module.exports = Tour;

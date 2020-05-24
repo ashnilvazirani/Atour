@@ -6,6 +6,8 @@ const tourRouter = express.Router();
 // tourRouter.param('id', tourController.checkID);
 // tourRouter.checkData;
 tourRouter.route('/top-5-tours').get(tourController.getTopTours, tourController.getAllTours);
+tourRouter.route('/monthly-plan/:year').get(tourController.getMonthlyPlan);
+tourRouter.route('/tour-stats').get(tourController.getTourStats)
 tourRouter.route('/')
     .get(tourController.getAllTours)
     .post(tourController.createTour);

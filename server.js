@@ -11,7 +11,6 @@ mongoose.connect(process.env.DB_LOCAL, {
   useCreateIndex: true,
   useFindAndModify: false
 }).then(conn => {
-  console.log(conn.connection);
   console.log('CONNECTION DONE')
 })
 //////////////////////////////////////////////////////////////////////
