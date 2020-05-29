@@ -11,6 +11,7 @@ exports.getTopTours = (request, response, next) => {
 };
 
 exports.getAllTours = catchAsync(async (request, response, next) => {
+
   console.log(request.query);
   const features = new APIFeature(Tour.find(), request.query)
     .filter()
@@ -26,6 +27,7 @@ exports.getAllTours = catchAsync(async (request, response, next) => {
       tours,
     },
   });
+  next();
 
 });
 exports.getTour = catchAsync(async (request, response, next) => {
