@@ -2,6 +2,7 @@ const express = require('express');
 const morgan = require('morgan');
 const AppError = require('./utils/appError');
 const app = express();
+
 const tourRouter = require('./routes/tourRouter');
 const userRouter = require('./routes/userRouter');
 
@@ -17,7 +18,7 @@ app.use(express.static(`${__dirname}/public`));
 // });
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
-ś;
+
 //Developer created middleware
 app.use((request, response, next) => {
   request.myTime = new Date().toISOString();

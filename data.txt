@@ -1,0 +1,53 @@
+*)types of middleware:
+    document, (schema.pre('save'),schema.post('action'))
+    query,
+    aggregate,
+    and model middleware.
+
+*)the 'this' keyword object in the validator function points only to the current document being inserted and so it cannot work UPDATE query
+
+*) For more data validations look into validator.js at github
+
+*)NDB- a node debugger by google
+    -A debugger works on break points wherein the code is seperated into multiple stops and each segment is then executed with the data set
+
+*)Express creates a middleware stack and pushes the function in the order they are defined in the code
+
+*)//the aggregate funtions in tourController basically acts as middlerware since after performing
+ the following computation the data is to be displayed and that is already 
+ done in getTours() or getallTours() so, while calling in router they are pipelined
+
+ *)to just get a brief overview of error handling in Express.
+    And we start by actually distinguishing
+    between two types of errors that can occur.
+    Operational errors and programming errors.
+    So, operational errors are problems
+    that we can predict will inevitably happen
+    at some point in the future.
+    And so we just need to handle them in advance.
+    They have nothing to do with bugs in our code.
+    Instead, they depend on the user, or the system,
+    or the network.
+    So, things like a user accessing an invalid route,
+    inputting invalid data, or an application failing to connect
+    to the database.
+    All these are operational errors
+    that we will need to handle in order
+    to prepare our application for these cases.
+
+*)on the other hand, we have programming errors.
+    Which are simply bugs that we developers
+    introduce into our code.
+    Like, for example, trying to read properties
+    from an undefined variable, using await without async,
+    accidentally using request.query instead of request.body,
+    or many other errors, really, that we might make.
+
+*)Unhandled promise rejection: (eg:- Database connection invalid)
+
+*) JWT: JSON Web Token
+
+*)So an instance method is basically a method
+    that is gonna be available on all documents
+*){...roles} defines to be refrential parameter where 
+    the number of parameters passed to the fucntion are arbitary.

@@ -12,6 +12,8 @@ mongoose.connect(process.env.DB_LOCAL, {
   useFindAndModify: false
 }).then(conn => {
   console.log('CONNECTION DONE')
+}).catch(err => {
+  console.log(err.message)
 })
 //////////////////////////////////////////////////////////////////////
 
@@ -37,6 +39,22 @@ mongoose.connect(process.env.DB_LOCAL, {
 // });
 
 const port = process.env.PORT || 3000;
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`LISTENING TO PORT ${port}`);
 });
+
+process.on('unhandledRejection', error => {
+  console.log(`Name: ${error.name} \n message: ${error.message}`);
+  console.log('SHUTTING DOWN APP....');
+  server.close(() => {
+    process.exit(0);
+  }); //to allow the sever to feed the on going requests and then shut down and then shut the process
+})
+
+process.on('uncaughtException', error => {
+  console.log(`Name: ${error.name} \n message: ${error.message}`);
+  console.log('SHUTTING DOWN APP....');
+  server.close(() => {
+    process.exit(0);
+  }); //to allow the sever to feed the on going requests and then shut down and then shut the process
+})
