@@ -4,6 +4,7 @@
     3)git add .
     4)git commit -m ''
     5)git push
+    6)git pull (if want to )
 
 *)types of middleware:
     document, (schema.pre('save'),schema.post('action'))
