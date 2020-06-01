@@ -59,3 +59,10 @@
     that is gonna be available on all documents
 *){...roles} defines to be refrential parameter where 
     the number of parameters passed to the fucntion are arbitary.
+
+*)virtual populate is funtion, basicially to get the child referencing when in parent referencing mode
+    without having the child reference in the parent document
+
+*)mergeParams is used to merge the url paramters belonging to diffrent documents into one
+    as we used reviewRouter in tourRouter to post a review 
+    and then in reviewRouter we used mergeParams to get the tourID

@@ -15,7 +15,7 @@ mongoose.connect(process.env.DB_LOCAL, {
 }).then(conn => {
     console.log('CONNECTION DONE')
 })
-const tours = JSON.parse(fs.readFileSync(`${__dirname}/tours-simple.json`));
+const tours = JSON.parse(fs.readFileSync(`${__dirname}/tours.json`));
 console.log(tours)
 const importData = async () => {
     try {
