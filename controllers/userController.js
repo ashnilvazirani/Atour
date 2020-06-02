@@ -1,6 +1,7 @@
 const User = require('./../models/userModel');
 const AppError = require('./../utils/appError')
 const catchAsync = require('./../utils/catchAsync');
+const factory = require('./generalHandler');
 
 const filterFields = (obj, ...allowedFields) => {
     const newObj = {};
@@ -51,18 +52,7 @@ exports.updateMe = catchAsync(async (request, response, next) => {
     });
     next();
 });
-exports.updateUser = (request, response) => {
-    response.status(500).json({
-        status: 'pending',
-        message: 'this router is not yet implemented',
-    });
-};
-exports.deleteUser = (request, response) => {
-    response.status(500).json({
-        status: 'pending',
-        message: 'this router is not yet implemented',
-    });
-};
+
 exports.deleteMe = catchAsync(async (request, response, next) => {
     const user = await User.findByIdAndUpdate(request.user.id, {
         active: false
@@ -73,4 +63,8 @@ exports.deleteMe = catchAsync(async (request, response, next) => {
     response.status(204).json({
         status: 'success-delete',
     })
+    next();
 });
+
+exports.updateUser = factory.updateOne(User);
+exports.deleteUser = factory.deleteOne(User);
