@@ -1,5 +1,4 @@
 const Tour = require('./../models/tourModel');
-const APIFeature = require('./../utils/apiFeatures');
 const AppError = require('./../utils/appError');
 const catchAsync = require('./../utils/catchAsync');
 const factory = require('./generalHandler');
@@ -11,40 +10,9 @@ exports.getTopTours = (request, response, next) => {
   next();
 };
 
-exports.getAllTours = catchAsync(async (request, response, next) => {
-
-  console.log(request.query);
-  const features = new APIFeature(Tour.find(), request.query)
-    .filter()
-    .sort()
-    .limitFields()
-    .paginate();
-  const tours = await features.query;
-
-  response.status(200).json({
-    status: 'sucess',
-    results: tours.length,
-    data: {
-      tours,
-    },
-  });
-  next();
-
-});
-exports.getTour = catchAsync(async (request, response, next) => {
-  const tour = await Tour.findById(request.params.id).populate('reviews');
-
-  if (tour == null) {
-    return next(new AppError('No tour found with this ID', 404))
-  }
-  response.status(200).json({
-    status: 'sucess-fetch-with-id',
-    doneAt: request.myTime,
-    data: {
-      tour,
-    },
-  });
-
+exports.getAllTours = factory.getAll(Tour)
+exports.getTour = factory.getOne(Tour, {
+  path: 'reviews'
 });
 
 exports.createTour = factory.createOne(Tour);
@@ -157,4 +125,75 @@ exports.getMonthlyPlan = catchAsync(async (request, response, next) => {
       plan,
     },
   });
+});
+
+exports.getToursWithin = catchAsync(async (request, response, next) => {
+  const {
+    distance,
+    latlon,
+    unit
+  } = request.params;
+  const [latitude, longitude] = latlon.split(',');
+  console.log(request.params);
+
+  const radius = unit === 'mi' ? distance / 3963.2 : distance / 6378.1;
+
+  if (!latitude || !longitude) {
+    return next(new AppError('Please provide complete data'));
+  }
+  const tours = await Tour.find({
+    startLocation: {
+      $geoWithin: {
+        $centerSphere: [
+          [longitude, latitude], radius
+        ]
+      }
+    }
+  });
+  response.status(200).json({
+    status: 'sucess',
+    result: tours.length,
+    data: {
+      tours
+    }
+  })
+});
+
+exports.getDistances = catchAsync(async (request, response, next) => {
+  const {
+    latlon,
+    unit
+  } = request.params;
+  const [latitude, longitude] = latlon.split(',');
+  console.log(request.params);
+
+  if (!latitude || !longitude) {
+    return next(new AppError('Please provide complete data'));
+  }
+  const multiplier = unit === 'mi' ? 0.000621371 : 0.0001;
+  const distances = await Tour.aggregate([{
+      $geoNear: {
+        near: {
+          type: 'Point',
+          coordinates: [longitude * 1, latitude * 1]
+        },
+        distanceField: 'distance',
+        distanceMultiplier: multiplier
+      }
+    },
+    {
+      $project: {
+        distance: 1,
+        name: 1
+      }
+    }
+  ]);
+
+  response.status(200).json({
+    status: 'sucess',
+    result: distances.length,
+    data: {
+      distances
+    }
+  })
 });

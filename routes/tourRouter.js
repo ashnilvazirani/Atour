@@ -7,17 +7,29 @@ const tourRouter = express.Router();
 // tourRouter.param('id', tourController.checkID);
 // tourRouter.checkData;
 tourRouter.route('/top-5-tours').get(tourController.getTopTours, tourController.getAllTours);
-tourRouter.route('/monthly-plan/:year').get(tourController.getMonthlyPlan);
+
+tourRouter.route('/monthly-plan/:year')
+    .get(authController.protect,
+        authController.restrictTo('admin', 'lead-guide', 'guide'),
+        tourController.getMonthlyPlan);
+
 tourRouter.route('/tour-stats').get(tourController.getTourStats)
+
 tourRouter.route('/')
-    .get(authController.protect, tourController.getAllTours)
-    .post(tourController.createTour);
+    .get(tourController.getAllTours)
+    .post(authController.protect, authController.restrictTo('admin', 'lead-guide'), tourController.createTour);
 
 tourRouter
     .route('/:id')
     .get(tourController.getTour)
-    .patch(tourController.updateTour)
+    .patch(authController.protect, authController.restrictTo('admin', 'lead-guide'), tourController.updateTour)
     .delete(authController.protect, authController.restrictTo('admin', 'lead-guide'), tourController.deleteTour);
+
+tourRouter.route('/toursWithin/:distance/center/:latlon/unit/:unit')
+    .get(tourController.getToursWithin);
+
+tourRouter.route('/distances/:latlon/unit/:unit')
+    .get(tourController.getDistances);
 
 // tourRouter.route('/:tourID/review').post(authController.protect, authController.restrictTo('user'), reviewController.createReview)
 tourRouter.use('/:tourID/review', reviewRouter);

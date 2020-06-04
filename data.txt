@@ -66,3 +66,7 @@
 *)mergeParams is used to merge the url paramters belonging to diffrent documents into one
     as we used reviewRouter in tourRouter to post a review 
     and then in reviewRouter we used mergeParams to get the tourID
+
+*)indexes is used in mongoDB to make efficient searching over the schema as it indexes the docmennts
+     and then while searching, simply jumps to the most relevant document
+     eg: indexing price and returning the sort by price feature

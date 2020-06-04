@@ -12,34 +12,25 @@ const filterFields = (obj, ...allowedFields) => {
     })
     return newObj;
 }
-exports.getAllUsers = catchAsync(async (request, response) => {
-    const user = await User.find();
-    response.status(200).json({
-        status: 'sucess',
-        results: user.length,
-        data: {
-            user,
-        },
-    });
-});
-exports.getUser = (request, response) => {
-    response.status(500).json({
-        status: 'pending',
-        message: 'this router is not yet implemented',
-    });
-};
+exports.getAllUsers = factory.getAll(User);
+exports.getUser = factory.getOne(User);
 exports.createUser = (request, response) => {
     response.status(500).json({
         status: 'pending',
         message: 'this router is not yet implemented',
     });
 };
+
+exports.getMe = (request, respone, next) => {
+    request.params.id = request.user.id;
+    next()
+}
 exports.updateMe = catchAsync(async (request, response, next) => {
     if (request.body.password || request.body.confirmPassword) {
         return next(new AppError('This route is not for updating password', 400));
     }
     const data = filterFields(request.body, 'name', 'email');
-    console.log(data)
+
     const user = await User.findByIdAndUpdate(request.user._id, data, {
         new: true,
         runValidators: true

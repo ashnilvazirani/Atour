@@ -7,10 +7,17 @@ userRouter.post('/signup', authController.signup);
 userRouter.post('/login', authController.login);
 userRouter.post('/forgotpassword', authController.forgotPassword);
 userRouter.patch('/resetPassword/:token', authController.resetPassword);
-userRouter.patch('/updatePassword', authController.protect, authController.updatePassword);
-userRouter.patch('/updateMe', authController.protect, userController.updateMe);
-userRouter.delete('/deleteMe', authController.protect, userController.deleteMe);
 
+userRouter.use(authController.protect);
+//AFTER this point every router needs authentication and so we just used our middleware and interted in the execution stack
+//so no need to mention .protect() to next routes
+userRouter.patch('/updatePassword', authController.updatePassword);
+userRouter.patch('/updateMe', userController.updateMe);
+userRouter.delete('/deleteMe', userController.deleteMe);
+
+userRouter.route('/me').get(userController.getMe, userController.getUser);
+
+userRouter.use(authController.restrictTo('admin'))
 userRouter
     .route('/')
     .get(userController.getAllUsers)
@@ -20,6 +27,6 @@ userRouter
     .route('/:id')
     .get(userController.getUser)
     .patch(userController.updateUser)
-    .delete(authController.protect, authController.restrictTo('admin'), userController.deleteUser);
+    .delete(userController.deleteUser);
 
 module.exports = userRouter;
