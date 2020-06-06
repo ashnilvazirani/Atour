@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet')
@@ -11,7 +12,11 @@ const app = express();
 const tourRouter = require('./routes/tourRouter');
 const userRouter = require('./routes/userRouter');
 const revireRouter = require('./routes/reviewRouter');
+const viewRouter = require('./routes/viewRouter');
 
+app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'views'))
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(helmet());
 //middleware
 const limiter = rateLimit({
@@ -32,15 +37,19 @@ app.use(express.json()); //middleware
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
-app.use(express.static(`${__dirname}/public`));
+
 
 // app.use((request, response, next) => {
 //   console.log('MY MIDDLEWARE IS MY MIDDLEWARE, NODE OF YOUR MIDDLEWARE');
 //   next();
 // });
+
+//ROUTES:
+
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/reviews', revireRouter);
+app.use('/', viewRouter);
 
 //Developer created middleware
 app.use((request, response, next) => {

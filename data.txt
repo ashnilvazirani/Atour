@@ -70,3 +70,7 @@
 *)indexes is used in mongoDB to make efficient searching over the schema as it indexes the docmennts
      and then while searching, simply jumps to the most relevant document
      eg: indexing price and returning the sort by price feature
+
+*)Using a template engine- "pug" with expresss to render the web contents 
+
+*)mixin are type of fucntion in pug
