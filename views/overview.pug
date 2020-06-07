@@ -39,7 +39,7 @@ block content
               | 
               span.card__footer-text per person
             p.card__ratings
-              span.card__footer-value=tour.ratingsAverage
+              span.card__footer-value=`${tour.ratingsAverage.toFixed(1)} / 5`
               | 
               span.card__footer-text= `rating: ${tour.ratingQuantity}`
             a.btn.btn--green.btn--small(href=`http://127.0.0.1:3000/tour/${tour.slug}`) Details
