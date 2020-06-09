@@ -7,6 +7,7 @@ const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean')
 const hpp = require('hpp')
 const AppError = require('./utils/appError');
+const cookieParser = require('cookie-parser');
 const app = express();
 
 const tourRouter = require('./routes/tourRouter');
@@ -33,6 +34,7 @@ app.use('/api', limiter);
 app.use(express.json({
   limit: '100kb'
 }));
+app.use(cookieParser());
 app.use(express.json()); //middleware
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
@@ -54,6 +56,7 @@ app.use('/', viewRouter);
 //Developer created middleware
 app.use((request, response, next) => {
   request.myTime = new Date().toISOString();
+  console.log(request.cookies);
   next();
 });
 
@@ -83,9 +86,12 @@ app.all('*', (request, response, next) => {
 app.use((error, request, response, next) => {
   error.statusCode = error.statusCode || 500;
   error.status = error.status || 'error';
-  response.status(error.statusCode).json({
-    status: error.status,
-    message: error.message,
-  });
+  if (request.error) {
+    response.status(error.statusCode).json({
+      status: error.status,
+      message: error.message,
+    });
+  }
+  next();
 });
 module.exports = app;

@@ -1,7 +1,11 @@
 // const axios = require('axios');
-
-const checkLogin = async (email, password) => {
+import axios from 'axios';
+import {
+    showAlert
+} from './alert';
+export const checkLogin = async (email, password) => {
     try {
+
         console.log(email, password);
         const res = await axios({
             method: 'POST',
@@ -11,18 +15,32 @@ const checkLogin = async (email, password) => {
                 password
             }
         });
-        console.log(res);
+        if (res.data.status === 'successfully') {
+            setTimeout(() => {
+                location.assign('/')
+            }, 1000);
+            showAlert('success', 'Login successful');
+        }
     } catch (error) {
-        console.log(error.response.data);
+        showAlert('error', 'Invalid Login credentials');
+
     }
-    // next();
 }
-document.querySelector('.btn').addEventListener('click', event => {
-    event.preventDefault();
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-    if (!email || !password) {
-        return alert('Enter both email and password');
+
+export const logout = async () => {
+    try {
+        const res = await axios({
+            method: 'GET',
+            url: 'http://127.0.0.1:3000/api/v1/users/logout',
+        });
+        if (res.data.status === 'success') {
+            showAlert('success', 'logged out');
+            location.reload(true);
+            if (location.href == '/tour') {
+                location.href("/")
+            }
+        }
+    } catch (error) {
+        showAlert('error', 'logout failed');
     }
-    checkLogin(email, password);
-})
+}

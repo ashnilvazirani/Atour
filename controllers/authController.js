@@ -34,6 +34,16 @@ const createSendToken = (user, statusCode, res) => {
     });
     user.password = undefined;
 }
+
+exports.logout = (req, res, next) => {
+    res.cookie('jwt', 'loggedout', {
+        expires: new Date(Date.now() + 10 * 1000),
+        httpOnly: true
+    })
+    res.status(200).json({
+        status: 'success'
+    })
+}
 exports.signup = catchAsync(async (request, response, next) => {
     const newUser = await User.create({
         name: request.body.name,
@@ -77,8 +87,9 @@ exports.protect = catchAsync(async (req, res, next) => {
         req.headers.authorization.startsWith('Bearer')
     ) {
         token = req.headers.authorization.split(' ')[1];
+    } else if (req.cookies.jwt) {
+        token = req.cookies.jwt;
     }
-    console.log('token:' + token)
     if (!token) {
         return next(
             new AppError('You are not logged in! Please log in to get access.', 401)
@@ -111,6 +122,38 @@ exports.protect = catchAsync(async (req, res, next) => {
     req.user = currentUser;
     next();
 });
+
+exports.isLoggedIn = async (req, res, next) => {
+    // 1) Getting token and check of it's there
+    try {
+        let token;
+        if (req.cookies.jwt) {
+            token = req.cookies.jwt;
+        }
+        if (!token) {
+            return next();
+        }
+        const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+        // // 3) Check if user still exists
+        const currentUser = await User.findById(decoded.id);
+        if (!currentUser) {
+            return next();
+        }
+        // // 4) Check if user changed password after the token was issued
+        //decoded.iat is the JWT timeStamp
+        if (currentUser.changedPasswordAfter(decoded.iat)) {
+            return next();
+        }
+        // // GRANT ACCESS TO PROTECTED ROUTE
+        //res.locals is a way of passing data to pug template as they have access to it
+        res.locals.user = currentUser;
+        next();
+    } catch (error) {
+        return next();
+    }
+
+};
+
 
 exports.restrictTo = (...roles) => {
     return (req, res, next) => {
