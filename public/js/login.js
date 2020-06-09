@@ -35,7 +35,9 @@ export const logout = async () => {
         });
         if (res.data.status === 'success') {
             showAlert('success', 'logged out');
-            location.reload(true);
+            setTimeout(() => {
+                location.assign('/')
+            }, 1000);
             if (location.href == '/tour') {
                 location.href("/")
             }

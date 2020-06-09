@@ -1,5 +1,7 @@
 const Tour = require('./../models/tourModel');
+const User = require('./../models/userModel');
 const catchAsync = require('./../utils/catchAsync');
+const AppError = require('./../utils/appError');
 
 exports.getOverview = catchAsync(async (request, response, next) => {
     const tours = await Tour.find();
@@ -26,10 +28,18 @@ exports.getTour = catchAsync(async (request, response, next) => {
         path: 'reviews',
         fields: 'review rating user'
     });
-    response.status(200).render('tour', {
-        title: tour.name,
-        tour
-    });
+    if (!tour) {
+        return response.status(404).render('error', {
+            title: 'Something went wrong!',
+            msg: 'Page not found'
+        })
+    } else {
+        return response.status(200).render('tour', {
+            title: tour.name,
+            tour
+        });
+    }
+
     next();
 });
 
@@ -37,5 +47,37 @@ exports.getLogin = catchAsync((request, response, next) => {
     response.render('login', {
         title: 'Log in to Atours'
     });
-    next();
+    // next();
+});
+exports.getAccount = catchAsync((request, response, next) => {
+    response.render('account', {
+        title: 'Your Account'
+        // user: request.locals.user
+    });
+    // next();
+})
+exports.updateUserData = catchAsync(async (request, response) => {
+    console.log(request.body)
+    try {
+        const user = await User.findByIdAndUpdate(request.user.id, {
+            email: request.body.email,
+            name: request.body.name,
+        }, {
+            new: true,
+            runValidators: true
+        });
+
+        return response.render('account', {
+            title: 'Your Account',
+            user
+        });
+
+    } catch (error) {
+        return response.status(404).render('error', {
+            title: 'Something went wrong!',
+            msg: 'Incorrect data'
+        })
+
+    }
+
 });

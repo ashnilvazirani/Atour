@@ -34,6 +34,10 @@ app.use('/api', limiter);
 app.use(express.json({
   limit: '100kb'
 }));
+app.use(express.urlencoded({
+  extended: true,
+  limit: '100kb'
+}));
 app.use(cookieParser());
 app.use(express.json()); //middleware
 if (process.env.NODE_ENV === 'development') {

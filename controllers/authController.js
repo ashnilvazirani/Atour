@@ -98,8 +98,6 @@ exports.protect = catchAsync(async (req, res, next) => {
 
     // // 2) Verification token
     const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-    console.log('id:' + decoded.id)
-
     // // 3) Check if user still exists
     const currentUser = await User.findById(decoded.id);
     if (!currentUser) {
@@ -120,6 +118,7 @@ exports.protect = catchAsync(async (req, res, next) => {
     }
     // // GRANT ACCESS TO PROTECTED ROUTE
     req.user = currentUser;
+    res.locals.user = currentUser;
     next();
 });
 
@@ -208,7 +207,6 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
 exports.resetPassword = catchAsync(async (req, res, next) => {
     //get the token from url
     const hashedToken = crypto.createHash('sha256').update(req.params.token).digest('hex');
-    console.log('hi')
     const user = await User.findOne({
         passwordResetToken: hashedToken,
         passwordResetExpires: {
@@ -233,11 +231,12 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
 
 exports.updatePassword = catchAsync(async (req, res, next) => {
     //get the user from database
-    // console.log(req.user)
+    console.log(req.body)
+    console.log('HELLO');
     const user = await User.findById(req.user._id).select('+password');
 
     if (!user) {
-        return next((new AppError('Not found with this email', 404)));
+        return next((new AppError('Not found with this ID', 404)));
     }
     //check if password is correct
     if (!await user.correctPassword(req.body.passwwordCurrent, user.password)) {
