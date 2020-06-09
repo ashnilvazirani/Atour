@@ -15,13 +15,12 @@ export const updateData = async (data, type) => {
             data
         });
         if (res.data.status === 'successfully') {
-            showAlert('success', 'updated out');
             setTimeout(() => {
-                location.assign('/me')
-            }, 1000);
+                showAlert('success', 'updated out');
+            }, 2000);
         }
 
     } catch (error) {
-        showAlert('error', 'Something went wrong' + error.message);
+        showAlert('error', 'Something went wrong try again with correct current password');
     }
 }
