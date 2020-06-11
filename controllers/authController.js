@@ -23,7 +23,6 @@ const createSendToken = (user, statusCode, res) => {
         httpOnly: true
     }
     // if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
-    console.log(res.cookie());
     res.cookie('jwt', token, cookieOptions);
     res.status(statusCode).json({
         status: 'successfully',
@@ -157,7 +156,6 @@ exports.isLoggedIn = async (req, res, next) => {
 exports.restrictTo = (...roles) => {
     return (req, res, next) => {
         //{...roles}= ['admin', 'lead-guide']
-        console.log('ROLE:' + req.user.email)
         if (!roles.includes(req.user.role)) {
             return next(new AppError('You are not authorized for doing this.', 403));
         }
@@ -171,7 +169,6 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
         email: req.body.email
     });
     if (!user) {
-        console.log('no')
         return next((new AppError('Not found with this email', 404)));
     }
     const resetToken = user.creatPasswordResetToken();
@@ -218,7 +215,6 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
         return next((new AppError('Invalid token or token expired', 400)));
     }
     //updatepassword
-    console.log(user)
     user.password = req.body.password;
     user.confirmPassword = req.body.confirmPassword;
     user.passwordResetToken = undefined;
@@ -231,8 +227,6 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
 
 exports.updatePassword = catchAsync(async (req, res, next) => {
     //get the user from database
-    console.log(req.body)
-    console.log('HELLO');
     const user = await User.findById(req.user._id).select('+password');
 
     if (!user) {

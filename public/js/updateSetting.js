@@ -6,9 +6,8 @@ import {
 //type is either 'password' or 'data'
 export const updateData = async (data, type) => {
     try {
-        var url = '';
-        url += type === 'password' ? 'http://127.0.0.1:3000/api/v1/users/updatePassword' : 'http://127.0.0.1:3000/api/v1/users/updateMe';
-        console.log(url);
+
+        const url = type === 'password' ? 'http://127.0.0.1:3000/api/v1/users/updatePassword' : 'http://127.0.0.1:3000/api/v1/users/updateMe';
         const res = await axios({
             method: 'PATCH',
             url,
@@ -18,9 +17,11 @@ export const updateData = async (data, type) => {
             setTimeout(() => {
                 showAlert('success', 'updated out');
             }, 2000);
+
         }
 
     } catch (error) {
+        console.log(error);
         showAlert('error', 'Something went wrong try again with correct current password');
     }
 }

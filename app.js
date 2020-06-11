@@ -2,7 +2,8 @@ const express = require('express');
 const path = require('path');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
-const helmet = require('helmet')
+const helmet = require('helmet');
+
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean')
 const hpp = require('hpp')
@@ -36,10 +37,10 @@ app.use(express.json({
 }));
 app.use(express.urlencoded({
   extended: true,
-  limit: '100kb'
+  limit: '50mb'
 }));
 app.use(cookieParser());
-app.use(express.json()); //middleware
+// app.use(express.json()); //middleware
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
@@ -60,7 +61,7 @@ app.use('/', viewRouter);
 //Developer created middleware
 app.use((request, response, next) => {
   request.myTime = new Date().toISOString();
-  console.log(request.cookies);
+  // console.log(request.cookies);
   next();
 });
 
@@ -71,7 +72,7 @@ app.get(`/`, (request, response) => {
   });
 });
 app.post('/', (request, response) => {
-  console.log(request.body);
+  // console.log(request.body);
 });
 app.all('*', (request, response, next) => {
   // response.status(404).json({

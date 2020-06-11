@@ -74,3 +74,4 @@
 *)Using a template engine- "pug" with expresss to render the web contents 
 
 *)mixin are type of fucntion in pug
+*0 Multer is a middleware supporting mulipart form data submission using encoding
