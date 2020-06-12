@@ -8575,7 +8575,7 @@ var updateData = /*#__PURE__*/function () {
             _context.prev = 8;
             _context.t0 = _context["catch"](0);
             console.log(_context.t0);
-            (0, _alert.showAlert)('error', 'Something went wrong try again with correct current password');
+            (0, _alert.showAlert)('error', _context.t0.message);
 
           case 12:
           case "end":
@@ -8953,7 +8953,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64909" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52206" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

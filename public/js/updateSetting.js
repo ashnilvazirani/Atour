@@ -22,6 +22,6 @@ export const updateData = async (data, type) => {
 
     } catch (error) {
         console.log(error);
-        showAlert('error', 'Something went wrong try again with correct current password');
+        showAlert('error', error.message);
     }
 }

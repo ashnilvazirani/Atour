@@ -23,17 +23,20 @@ const multerFilter = (req, file, cb) => {
         cb(new AppError('please upload only a image file', 400), false);
     }
 }
-// const upload = multer({
-//     storage: multerStorage,
-//     fileFilter: multerFilter
-// });
 const upload = multer({
     storage: multerStorage,
     fileFilter: multerFilter
 })
-exports.resizeUserPhoto = (req, res, next) => {
+exports.resizeUserPhoto = async (req, res, next) => {
     // if (!req.file) next();
-    // sharp(req.file.buffer);
+    // req.file.filename = `user-${req.user.id}-${Date.now()}`
+    // await sharp(req.file.buffer)
+    //     .resize(500, 500)
+    //     .toFormat('jpeg')
+    //     .jpeg({
+    //         quality: 90
+    //     })
+    //     .toFile(`public/img/users/${req.file.filename}`);
     next();
 }
 

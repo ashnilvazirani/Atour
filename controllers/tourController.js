@@ -2,6 +2,66 @@ const Tour = require('./../models/tourModel');
 const AppError = require('./../utils/appError');
 const catchAsync = require('./../utils/catchAsync');
 const factory = require('./generalHandler');
+const multer = require('multer');
+const sharp = require('sharp');
+
+const multerStorage = multer.memoryStorage();
+const multerFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith('image')) {
+    cb(null, true);
+  } else {
+    cb(new AppError('please upload only a image file', 400), false);
+  }
+}
+const upload = multer({
+  storage: multerStorage,
+  fileFilter: multerFilter
+})
+exports.uploadTourImages = upload.fields([{
+    name: 'imageCover',
+    maxCount: 1
+  },
+  {
+    name: 'images',
+    maxCount: 3
+  },
+]);
+
+exports.resizeTourImage = async (req, res, next) => {
+  if (req.files.imageCover) {
+    req.files.imageCover.map((file) => {
+      const filename = `tour-cover-${req.params.id}-${Date.now()}.jpeg`;
+      sharp(req.files.imageCover[0].buffer).resize(2000, 1333).toFormat('jpeg').jpeg({
+        quality: 90
+      }).toFile(`public/img/tours/${filename}`);
+      req.body.imageCover = (filename);
+    })
+  }
+  if (req.files.images) {
+    req.body.images = [];
+    req.files.images.map((file, i) => {
+      const filename = `tour-image-${i+1}-${req.params.id}-${Date.now()}.jpeg`;
+      sharp(req.files.images[i].buffer).resize(2000, 1333).toFormat('jpeg').jpeg({
+        quality: 90
+      }).toFile(`public/img/tours/${filename}`);
+      req.body.images.push(filename);
+    })
+  }
+  // console.log(req.files);
+  // if (!req.files.images || !req.files.imageCover) {
+  //   next();
+  // }
+  // if (!req.file) next();
+  // req.file.filename = `user-${req.user.id}-${Date.now()}`
+  // await sharp(req.file.buffer)
+  //     .resize(500, 500)
+  //     .toFormat('jpeg')
+  //     .jpeg({
+  //         quality: 90
+  //     })
+  //     .toFile(`public/img/users/${req.file.filename}`);
+  next();
+}
 
 exports.getTopTours = (request, response, next) => {
   request.query.limit = '5';
@@ -134,7 +194,6 @@ exports.getToursWithin = catchAsync(async (request, response, next) => {
     unit
   } = request.params;
   const [latitude, longitude] = latlon.split(',');
-  console.log(request.params);
 
   const radius = unit === 'mi' ? distance / 3963.2 : distance / 6378.1;
 
@@ -165,7 +224,6 @@ exports.getDistances = catchAsync(async (request, response, next) => {
     unit
   } = request.params;
   const [latitude, longitude] = latlon.split(',');
-  console.log(request.params);
 
   if (!latitude || !longitude) {
     return next(new AppError('Please provide complete data'));

@@ -16,7 +16,7 @@ exports.getAll = (request, response, next) => {
     response.status(200).render('base', {
         tour: 'New test tour',
         developer: 'Ashnil Vazirani',
-        title: ' Exciting tours for adventurous people'
+        title: 'Exciting tours for adventurous people'
     });
     next();
 }

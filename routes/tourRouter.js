@@ -22,7 +22,9 @@ tourRouter.route('/')
 tourRouter
     .route('/:id')
     .get(tourController.getTour)
-    .patch(authController.protect, authController.restrictTo('admin', 'lead-guide'), tourController.updateTour)
+    .patch(authController.protect, authController.restrictTo('admin', 'lead-guide'),
+        tourController.uploadTourImages, tourController.resizeTourImage, tourController.updateTour)
+
     .delete(authController.protect, authController.restrictTo('admin', 'lead-guide'), tourController.deleteTour);
 
 tourRouter.route('/toursWithin/:distance/center/:latlon/unit/:unit')
