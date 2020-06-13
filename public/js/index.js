@@ -23,6 +23,8 @@ const saveBtn = document.querySelector('#saveUserData');
 const passwordBtn = document.querySelector('#savePassword');
 const userPhoto = document.querySelector('#userPhoto');
 const bookBtn = document.querySelector('#bookTour');
+const reviewBtn = document.querySelector('#saveReview');
+
 
 if (mapBox) {
     const locations = JSON.parse(document.getElementById('map').dataset.locations);
@@ -31,8 +33,6 @@ if (mapBox) {
 if (loginBtn) {
     loginBtn.addEventListener('click', event => {
         event.preventDefault();
-
-
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
 
@@ -89,5 +89,27 @@ if (bookBtn) {
         const tourID = event.target.dataset.tourid;
         console.log(tourID);
         bookTour(tourID);
+    })
+}
+if (reviewBtn) {
+    reviewBtn.addEventListener('click', event => {
+        event.preventDefault();
+        const index = event.target.dataset.index;
+        console.log(index);
+        const rating = document.getElementById(`rating-${index}`).value;
+        const review = document.getElementById(`review-${index}`).value;
+        const tour = document.getElementById(`tour-${index}`).value;
+        const user = document.getElementById(`user-${index}`).value;
+        // console.log(review, rating, user, tour);
+        updateData({
+            tour,
+            user,
+            review,
+            rating
+        }, 'review');
+        // document.getElementById(`rating-${index}`).value = '';
+        // document.getElementById(`review-${index}`).value = '';
+        // document.getElementById(`user-${index}`).value = '';
+        // document.getElementById(`tour-${index}`).value = '';
     })
 }

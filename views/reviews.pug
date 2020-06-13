@@ -1,0 +1,48 @@
+extend base
+mixin navItem(link, text, icon, active)
+    li(class=`${active ? 'side-nav--active': ''}`)
+        a(href=`${link}`)
+            svg
+                use(xlink:href=`img/icons.svg#icon-${icon}`)
+            | #{text}
+block content
+    main.main
+        .user-view
+            nav.user-view__menu
+                ul.side-nav
+                    +navItem('#', 'Settings', 'settings')
+                    +navItem('/my-tours', 'My bookings', 'briefcase') 
+                    +navItem('#', 'My Reviews', 'star')
+                    +navItem('#', 'Billing', 'credit-card')
+
+            -if(user.role ===  'admin')
+                .admin-nav
+                    h5.admin-nav__heading Admin
+                    ul.side-nav
+                        +navItem('#', 'Manage Tours', 'map')
+                        +navItem('#', 'Manage Users', 'users')
+                        +navItem('#', 'Manage Reviews', 'star')
+                        +navItem('#', 'Billinggs', 'briefcase')
+            
+            .user-view__content
+                
+                .user-view__form-container
+                    h2.heading-secondary.ma-bt-md Your account settings
+                    -var i=1;
+                    each tour in tours    
+                        form.form.form-user-review
+                            .form__group
+                                label.form__label(for='Tour Name') Tour Name
+                                input#TourName.form__input(type='text', value=`${tour.name}`,required, name='tourName')
+                                input.form__input(type='hidden', id=`tour-${i}`,value=`${tour._id}`,required, name='tour')
+                                input.form__input(type='hidden', id=`user-${i}`, value=`${user._id}`,required, name='user')
+                            .form__group
+                                label.form__label(for='rating') Ratings
+                                input.form__input(type='number', id=`rating-${i}`, required, name='rating')
+                            .form__group.ma-bt-md
+                                label.form__label(for='review') Review Comments
+                                textarea.form__input(type='text', id=`review-${i}`, rows="5", required, name='review')
+                            .form__group.right
+                                button.btn.btn--small.btn--green(id='saveReview', data-index=`${i}`) Save Review
+                            -i++
+                            -console.log(i);

@@ -6,10 +6,21 @@ import {
 //type is either 'password' or 'data'
 export const updateData = async (data, type) => {
     try {
-
-        const url = type === 'password' ? 'http://127.0.0.1:3000/api/v1/users/updatePassword' : 'http://127.0.0.1:3000/api/v1/users/updateMe';
+        var url = "";
+        var method = "";
+        if (type === 'password') {
+            url = 'http://127.0.0.1:3000/api/v1/users/updatePassword';
+            method = 'PATCH';
+        } else if (type === 'data') {
+            url = 'http://127.0.0.1:3000/api/v1/users/updateMe';
+            method = 'PATCH';
+        } else if (type === 'review') {
+            url = 'http://127.0.0.1:3000/api/v1/reviews';
+            method = 'POST';
+        }
+        console.log(url, method);
         const res = await axios({
-            method: 'PATCH',
+            method,
             url,
             data
         });
@@ -17,7 +28,7 @@ export const updateData = async (data, type) => {
             setTimeout(() => {
                 showAlert('success', 'updated out');
             }, 2000);
-
+            location.reload();
         }
 
     } catch (error) {

@@ -40,7 +40,7 @@ exports.updateOne = Model => catchAsync(async (request, response, next) => {
 exports.createOne = Model => catchAsync(async (request, response, next) => {
     const doc = await Model.create(request.body);
     response.status(200).json({
-        status: 'success-insertion-tour',
+        status: 'successfully',
         data: {
             content: doc,
         },

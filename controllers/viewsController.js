@@ -1,4 +1,5 @@
 const Tour = require('./../models/tourModel');
+const Review = require('./../models/reviewModel');
 const User = require('./../models/userModel');
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
@@ -6,6 +7,10 @@ const {
     bookTour
 } = require('../public/js/stripe');
 const Booking = require('../models/bookingModel');
+const {
+    request,
+    response
+} = require('express');
 
 exports.getOverview = catchAsync(async (request, response, next) => {
     const tours = await Tour.find();
@@ -85,7 +90,8 @@ exports.updateUserData = catchAsync(async (request, response) => {
     }
 
 });
-exports.getMyTours = async (request, response, next) => {
+getUserTours = async (request) => {
+    //based on the current logged in user
     const bookings = await Booking.find({
         user: request.user.id
     });
@@ -95,8 +101,39 @@ exports.getMyTours = async (request, response, next) => {
             $in: tourIDs
         }
     });
+    return tours;
+}
+exports.getMyTours = async (request, response, next) => {
+    const tours = await getUserTours(request);
     response.status(200).render('overview', {
         title: 'My tours',
         tours
     })
+}
+
+exports.userReviews = async (request, response, next) => {
+    //getting all the tours ever done by user
+    var tours = await getUserTours(request);
+    const tourID = tours.map(el => el._id);
+    //getting the reviews posted by user for the tours completed
+    var review = await Review.find({
+        user: request.user._id,
+        tour: {
+            $in: tourID
+        }
+    })
+    const reviewedTours = review.map(el => el.tour);
+    //filtering the tours with pending reviews
+    reviewedTours.map(el => {
+        tourID.splice(reviewedTours.indexOf(el), 1);
+    });
+    tours = await Tour.find({
+        _id: {
+            $in: tourID
+        }
+    });
+    response.status(200).render('reviews', {
+        title: 'post my review',
+        tours
+    });
 }
