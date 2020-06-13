@@ -13,8 +13,9 @@ const app = express();
 
 const tourRouter = require('./routes/tourRouter');
 const userRouter = require('./routes/userRouter');
-const revireRouter = require('./routes/reviewRouter');
+const reviewRouter = require('./routes/reviewRouter');
 const viewRouter = require('./routes/viewRouter');
+const bookingRouter = require('./routes/bookingRouter');
 
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'))
@@ -55,7 +56,8 @@ if (process.env.NODE_ENV === 'development') {
 
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
-app.use('/api/v1/reviews', revireRouter);
+app.use('/api/v1/reviews', reviewRouter);
+app.use('/api/v1/bookings', bookingRouter);
 app.use('/', viewRouter);
 
 //Developer created middleware

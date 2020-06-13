@@ -75,3 +75,8 @@
 
 *)mixin are type of fucntion in pug
 *0 Multer is a middleware supporting mulipart form data submission using encoding
+
+*)MailSac service can be sued to send email to a dummy mailbox
+
+*)stripe API
+    the line_items options contains a set of fields coming from the standard stripe fields 

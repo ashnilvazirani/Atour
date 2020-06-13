@@ -1,5 +1,5 @@
 const User = require('./../models/userModel');
-const email = require('./../utils/email')
+const Email = require('./../utils/email')
 const crypto = require('crypto');
 const {
     promisify
@@ -16,7 +16,7 @@ const signToken = (id) => {
     });
 }
 const createSendToken = (user, statusCode, res) => {
-    const token = signToken(user._id);
+    const token = signToken(user.id);
 
     const cookieOptions = {
         expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRY * 24 * 60 * 60 * 1000),
@@ -32,6 +32,7 @@ const createSendToken = (user, statusCode, res) => {
         }
     });
     user.password = undefined;
+    // console.log(res.cookie.jwt);
 }
 
 exports.logout = (req, res, next) => {
@@ -44,15 +45,21 @@ exports.logout = (req, res, next) => {
     })
 }
 exports.signup = catchAsync(async (request, response, next) => {
-    const newUser = await User.create({
-        name: request.body.name,
-        email: request.body.email,
-        password: request.body.password,
-        confirmPassword: request.body.confirmPassword,
-        passwordChangedAt: request.body.passwordChangedAt,
-        role: request.body.role,
-    });
-    createSendToken(newUser, 201, res);
+    console.log(request.body);
+    // const newUser = await User.create({
+    //     name: request.body.name,
+    //     email: request.body.email,
+    //     password: request.body.password,
+    //     confirmPassword: request.body.confirmPassword,
+    // });
+
+    const newUser = await User.create(request.body);
+    console.log("user inserted");
+    // http://127.0.0.1:3000/me
+    const url = `${request.protocol}://${request.get('host')}/me`;
+    await new Email(newUser, url).sendWelcome();
+    console.log('EMAIL SENT')
+    createSendToken(newUser, 201, response);
 });
 
 exports.login = catchAsync(async (request, response, next) => {
@@ -177,19 +184,19 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
         validateBeforeSave: false
     });
 
-    const resetURL = `${req.protocol}://${req.get('host')}/api/v1/resetPassword/${resetToken}`;
-    const message = `Your link to forgot password is given below\n${resetURL}\nClick to change your password else fuck off!`;
     try {
-
+        const resetURL = `${req.protocol}://${req.get('host')}/api/v1/resetPassword/${resetToken}`;
         await email.sendEmail({
             email: user.email,
             subject: 'Request to reset password(valid for 10 minutes)',
-            message
+            message: resetURL
         })
-        res.status(200).json({
-            status: 'success-reset-password',
-            message: 'token sent to email'
-        })
+
+        // await new Email(user, resetURL).sendPasswordReset();
+        // res.status(200).json({
+        //     status: 'success-reset-password',
+        //     message: 'token sent to email'
+        // })
     } catch (err) {
         user.passwordResetToken = undefined;
         user.passwordResetExpires = undefined;

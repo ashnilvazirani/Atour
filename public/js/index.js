@@ -1,5 +1,8 @@
 import '@babel/polyfill';
 import {
+    bookTour
+} from './stripe';
+import {
     checkLogin,
     logout
 } from './login';
@@ -19,6 +22,7 @@ const mapBox = document.getElementById('map')
 const saveBtn = document.querySelector('#saveUserData');
 const passwordBtn = document.querySelector('#savePassword');
 const userPhoto = document.querySelector('#userPhoto');
+const bookBtn = document.querySelector('#bookTour');
 
 if (mapBox) {
     const locations = JSON.parse(document.getElementById('map').dataset.locations);
@@ -77,5 +81,13 @@ if (userPhoto) {
     userPhoto.addEventListener('click', (event) => {
         event.preventDefault();
         console.log(document.getElementById('photo').value)
+    })
+}
+if (bookBtn) {
+    bookBtn.addEventListener('click', event => {
+        event.target.textContent = "Processing....";
+        const tourID = event.target.dataset.tourid;
+        console.log(tourID);
+        bookTour(tourID);
     })
 }
