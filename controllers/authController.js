@@ -7,6 +7,9 @@ const {
 const catchAsync = require('./../utils/catchAsync');
 const jwt = require('jsonwebtoken');
 const AppError = require('./../utils/appError');
+const {
+    response
+} = require('express');
 
 const signToken = (id) => {
     return jwt.sign({
@@ -16,7 +19,7 @@ const signToken = (id) => {
     });
 }
 const createSendToken = (user, statusCode, res) => {
-    const token = signToken(user.id);
+    const token = signToken(user._id);
 
     const cookieOptions = {
         expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRY * 24 * 60 * 60 * 1000),
@@ -45,7 +48,6 @@ exports.logout = (req, res, next) => {
     })
 }
 exports.signup = catchAsync(async (request, response, next) => {
-    console.log(request.body);
     // const newUser = await User.create({
     //     name: request.body.name,
     //     email: request.body.email,
@@ -56,7 +58,7 @@ exports.signup = catchAsync(async (request, response, next) => {
     const newUser = await User.create(request.body);
     console.log("user inserted");
     // http://127.0.0.1:3000/me
-    const url = `${request.protocol}://${request.get('host')}/me`;
+    const url = `${request.protocol}://${request.get('host')}/login`;
     await new Email(newUser, url).sendWelcome();
     console.log('EMAIL SENT')
     createSendToken(newUser, 201, response);

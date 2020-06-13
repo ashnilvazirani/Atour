@@ -33,12 +33,12 @@ block content
                         form.form.form-user-review
                             .form__group
                                 label.form__label(for='Tour Name') Tour Name
-                                input#TourName.form__input(type='text', value=`${tour.name}`,required, name='tourName')
+                                input#TourName.form__input(type='text', value=`${tour.name}`,required, name='tourName', readonly)
                                 input.form__input(type='hidden', id=`tour-${i}`,value=`${tour._id}`,required, name='tour')
                                 input.form__input(type='hidden', id=`user-${i}`, value=`${user._id}`,required, name='user')
                             .form__group
-                                label.form__label(for='rating') Ratings
-                                input.form__input(type='number', id=`rating-${i}`, required, name='rating')
+                                label.form__label(for='rating') Ratings (out of 5)
+                                input.form__input(type='number', id=`rating-${i}`, required, name='rating', min=1, max=5)
                             .form__group.ma-bt-md
                                 label.form__label(for='review') Review Comments
                                 textarea.form__input(type='text', id=`review-${i}`, rows="5", required, name='review')

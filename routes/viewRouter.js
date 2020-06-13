@@ -4,7 +4,7 @@ const authController = require('./../controllers/authController');
 const viewController = require('./../controllers/viewsController')
 const bookingController = require('./../controllers/bookingController')
 
-
+router.get('/signup', viewController.getSignUp)
 router.get('/', bookingController.createBookingCheckout, authController.isLoggedIn, viewController.getOverview);
 router.get('/overview', authController.isLoggedIn, viewController.getOverview);
 router.get('/tour/:name', authController.isLoggedIn, viewController.getTour);

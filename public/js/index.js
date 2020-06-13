@@ -24,6 +24,7 @@ const passwordBtn = document.querySelector('#savePassword');
 const userPhoto = document.querySelector('#userPhoto');
 const bookBtn = document.querySelector('#bookTour');
 const reviewBtn = document.querySelector('#saveReview');
+const signupBtn = document.querySelector('#signup');
 
 
 if (mapBox) {
@@ -111,5 +112,20 @@ if (reviewBtn) {
         // document.getElementById(`review-${index}`).value = '';
         // document.getElementById(`user-${index}`).value = '';
         // document.getElementById(`tour-${index}`).value = '';
+    })
+}
+if (signupBtn) {
+    signupBtn.addEventListener('click', event => {
+        event.preventDefault();
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        updateData({
+            name,
+            email,
+            password,
+            confirmPassword
+        }, 'signup');
     })
 }

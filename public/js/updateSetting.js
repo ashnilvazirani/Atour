@@ -17,6 +17,9 @@ export const updateData = async (data, type) => {
         } else if (type === 'review') {
             url = 'http://127.0.0.1:3000/api/v1/reviews';
             method = 'POST';
+        } else if (type === 'signup') {
+            url = 'http://127.0.0.1:3000/api/v1/users/signup';
+            method = 'POST';
         }
         console.log(url, method);
         const res = await axios({
@@ -26,9 +29,12 @@ export const updateData = async (data, type) => {
         });
         if (res.data.status === 'successfully') {
             setTimeout(() => {
-                showAlert('success', 'updated out');
+                showAlert('success', 'Completed your desired task');
             }, 2000);
             location.reload();
+            if (type === "signup") {
+                location.href = "/me";
+            }
         }
 
     } catch (error) {

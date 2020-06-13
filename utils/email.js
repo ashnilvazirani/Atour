@@ -1,6 +1,8 @@
 const nodemailer = require('nodemailer');
 const pug = require('pug');
 const htmlToText = require('html-to-text');
+// var sgTransport = require('nodemailer-sendgrid-transport');
+
 
 module.exports = class Email {
     constructor(user, url) {
@@ -21,13 +23,13 @@ module.exports = class Email {
         //     })
         // }
 
-        return nodemailer.createTransport({
+        return nodemailer.createTransport(({
             service: 'SendGrid',
             auth: {
-                username: process.env.SENDGRID_USERNAME,
-                password: process.env.SENDGRID_PASSWORD,
+                user: process.env.SENDGRID_USERNAME,
+                pass: process.env.SENDGRID_PASSWORD
             }
-        })
+        }));
         // return nodemailer.createTransport({
         //     host: "smtp.mailtrap.io",
         //     port: 2525,
@@ -47,6 +49,7 @@ module.exports = class Email {
             subject
         });
         // 2)define the mailing options
+
         const mailOption = {
             from: this.from,
             to: this.to,
@@ -55,8 +58,17 @@ module.exports = class Email {
             text: htmlToText.fromString(htmlContent),
             //text can also have HTML data
         }
+
         // 3)create a transporter
-        await this.newTransport().sendMail(mailOption);
+        this.newTransport().sendMail(mailOption, function (error, info) {
+            if (error) {
+                console.log(error)
+            }
+            if (info) {
+                console.log('email sent')
+                console.log(info.response);
+            }
+        });
     }
 
     async sendWelcome() {

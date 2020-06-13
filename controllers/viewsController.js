@@ -137,3 +137,9 @@ exports.userReviews = async (request, response, next) => {
         tours
     });
 }
+
+exports.getSignUp = (request, response, next) => {
+    response.status(200).render('signup', {
+        title: 'Welcome to Atours!'
+    });
+}
