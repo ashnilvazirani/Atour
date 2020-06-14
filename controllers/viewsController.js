@@ -1,3 +1,4 @@
+/*esline disable*/
 const Tour = require('./../models/tourModel');
 const Review = require('./../models/reviewModel');
 const User = require('./../models/userModel');
@@ -144,10 +145,9 @@ exports.getSignUp = (request, response, next) => {
     });
 }
 exports.bookingForm = async (request, response, next) => {
-    console.log(request.params);
-    const tours = await Tour.findById(request.params.id);
-    return response.status(200).render('account', {
+    const tour = await Tour.findById(request.params.id);
+    return response.status(200).render('bookingForm', {
         title: 'One step, away from your tour!',
-        tours
+        tour
     });
 }

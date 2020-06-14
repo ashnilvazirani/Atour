@@ -8341,12 +8341,17 @@ module.exports.default = axios;
 },{"./utils":"../../node_modules/axios/lib/utils.js","./helpers/bind":"../../node_modules/axios/lib/helpers/bind.js","./core/Axios":"../../node_modules/axios/lib/core/Axios.js","./core/mergeConfig":"../../node_modules/axios/lib/core/mergeConfig.js","./defaults":"../../node_modules/axios/lib/defaults.js","./cancel/Cancel":"../../node_modules/axios/lib/cancel/Cancel.js","./cancel/CancelToken":"../../node_modules/axios/lib/cancel/CancelToken.js","./cancel/isCancel":"../../node_modules/axios/lib/cancel/isCancel.js","./helpers/spread":"../../node_modules/axios/lib/helpers/spread.js"}],"../../node_modules/axios/index.js":[function(require,module,exports) {
 module.exports = require('./lib/axios');
 },{"./lib/axios":"../../node_modules/axios/lib/axios.js"}],"stripe.js":[function(require,module,exports) {
+var _this = this;
+
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
 // import axios from 'axios';
-var axios = require('axios');
+var axios = require('axios'); // var {
+//     showAlert
+// } = require('./alert');
+
 
 exports.bookTour = /*#__PURE__*/function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(tourID) {
@@ -8389,6 +8394,55 @@ exports.bookTour = /*#__PURE__*/function () {
 
   return function (_x) {
     return _ref.apply(this, arguments);
+  };
+}();
+
+exports.checkTourAvailability = /*#__PURE__*/function () {
+  var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(data) {
+    var result;
+    return regeneratorRuntime.wrap(function _callee2$(_context2) {
+      while (1) {
+        switch (_context2.prev = _context2.next) {
+          case 0:
+            _context2.prev = 0;
+            console.log('sending data');
+            _context2.next = 4;
+            return axios({
+              method: 'POST',
+              url: "http://127.0.0.1:3000/api/v1/bookings/checkAvailable",
+              data: data
+            });
+
+          case 4:
+            result = _context2.sent;
+            console.log(result.data.status);
+
+            if (result.data.status === 'success') {
+              console.log('booking the tour'); // showAlert('success', 'Going ahead to make payment...');
+
+              _this.bookTour(data.tourID);
+            } else if (result.data.status === 'fail') {
+              console.log('failed to book'); // showAlert('error', 'Cannot book this tour for you');
+            }
+
+            _context2.next = 12;
+            break;
+
+          case 9:
+            _context2.prev = 9;
+            _context2.t0 = _context2["catch"](0);
+            console.log(_context2.t0);
+
+          case 12:
+          case "end":
+            return _context2.stop();
+        }
+      }
+    }, _callee2, null, [[0, 9]]);
+  }));
+
+  return function (_x2) {
+    return _ref2.apply(this, arguments);
   };
 }();
 },{"axios":"../../node_modules/axios/index.js"}],"alert.js":[function(require,module,exports) {
@@ -8933,6 +8987,10 @@ var _alert = require("./alert");
 
 var _updateSetting = require("./updateSetting");
 
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
 var loginBtn = document.querySelector('#login');
 var logoutBtn = document.querySelector('#logout');
 var mapBox = document.getElementById('map');
@@ -8942,6 +9000,19 @@ var userPhoto = document.querySelector('#userPhoto');
 var bookBtn = document.querySelector('#bookTour');
 var reviewBtn = document.querySelector('#saveReview');
 var signupBtn = document.querySelector('#signup');
+var confirmBookingBtn = document.querySelector('#confirmBooking');
+
+function isNumber(evt) {
+  evt = evt ? evt : window.event;
+  var charCode = evt.which ? evt.which : evt.keyCode;
+
+  if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+    return false;
+  }
+
+  return true;
+} // onkeypress = "return isNumber(event)"
+
 
 if (mapBox) {
   var locations = JSON.parse(document.getElementById('map').dataset.locations);
@@ -9008,10 +9079,42 @@ if (bookBtn) {
   bookBtn.addEventListener('click', function (event) {
     event.target.textContent = "Processing....";
     var tourID = event.target.dataset.tourid;
-    location.href = "/book/".concat(tourID);
-    console.log(tourID);
-    (0, _stripe.bookTour)(tourID);
+    location.href = "/book/".concat(tourID); // console.log(tourID);
+    // bookTour(tourID);
   });
+}
+
+if (confirmBookingBtn) {
+  confirmBookingBtn.addEventListener('click', /*#__PURE__*/function () {
+    var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(event) {
+      var tourID, members, dates, data;
+      return regeneratorRuntime.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              event.preventDefault();
+              tourID = document.getElementById('tourID').value;
+              members = document.getElementById('members').value;
+              dates = document.getElementById('tourDates').value;
+              data = {
+                tourID: tourID,
+                members: members,
+                dates: dates
+              };
+              (0, _stripe.checkTourAvailability)(data);
+
+            case 6:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee);
+    }));
+
+    return function (_x) {
+      return _ref.apply(this, arguments);
+    };
+  }());
 }
 
 if (reviewBtn) {
@@ -9022,8 +9125,7 @@ if (reviewBtn) {
     var rating = document.getElementById("rating-".concat(index)).value;
     var review = document.getElementById("review-".concat(index)).value;
     var tour = document.getElementById("tour-".concat(index)).value;
-    var user = document.getElementById("user-".concat(index)).value; // console.log(review, rating, user, tour);
-
+    var user = document.getElementById("user-".concat(index)).value;
     (0, _updateSetting.updateData)({
       tour: tour,
       user: user,
@@ -9079,7 +9181,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63116" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50436" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

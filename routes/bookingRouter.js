@@ -5,6 +5,7 @@ const bookingRouter = express.Router();
 
 bookingRouter.use(authController.protect);
 bookingRouter.get('/checkout-session/:tourID', bookingController.getCheckoutSession)
+bookingRouter.post('/checkAvailable', bookingController.checkTourAvailable)
 bookingRouter.use(authController.restrictTo('admin', 'lead-guide'));
 
 bookingRouter.route('/')

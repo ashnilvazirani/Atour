@@ -4,6 +4,7 @@ const fs = require('fs')
 const Tour = require('./../../models/tourModel');
 const User = require('./../../models/userModel');
 const Review = require('./../../models/reviewModel');
+const Availability = require('./../../models/tourAvailability');
 const dotenv = require('dotenv');
 dotenv.config({
     path: './config.env'
@@ -38,9 +39,10 @@ const importData = async () => {
 }
 const deleteData = async () => {
     try {
-        await Tour.deleteMany();
-        await User.deleteMany();
         await Review.deleteMany();
+        await User.deleteMany();
+        await Availability.deleteMany();
+        await Tour.deleteMany();
 
         console.log('DATA DELETED');
         process.exit();

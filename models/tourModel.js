@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
-// const User = require('./userModel')
+const TourAvailability = require('./tourAvailability');
 // const validator = require('validator');
 const tourSchema = new mongoose.Schema({
   name: {
@@ -76,7 +76,10 @@ const tourSchema = new mongoose.Schema({
     default: Date.now(),
     select: false, //doesn't send the value
   },
-  startDates: [Date],
+  startDates: {
+    type: [Date],
+    required: [true, 'Enter atleast one start date']
+  },
   secretTour: {
     type: Boolean,
     default: false,
@@ -154,6 +157,10 @@ tourSchema.pre('save', function (next) {
   });
   next();
 });
+// tourSchema.post('save', async = (next) => {
+
+//   next();
+// });
 tourSchema.pre(/^find/, function (next) {
   this.find({
     secretTour: {
@@ -174,10 +181,25 @@ tourSchema.post(/^find/, function (doc, next) {
   console.log(`Query took ${Date.now() - this.start} ms`);
   next();
 });
-// tourSchema.post('save', function (doc, next) {
-//   console.log(doc);
-//   next();
-// });
+tourSchema.post('save', function (doc, next) {
+  const promises = doc.startDates.map(async startDate => {
+    const tourStartDate = startDate;
+    const tourPrice = doc.price;
+    const tourGroupSize = doc.maxGroupSize;
+    const tour = doc._id;
+    const tourBookedSeats = 0;
+    console.log(doc.maxGroupSize)
+    const available = await TourAvailability.create({
+      tour,
+      tourStartDate,
+      tourPrice,
+      tourBookedSeats,
+      tourGroupSize
+    });
+    await Promise.all(promises);
+  })
+  next();
+});
 //AGGREGATE MIDDLEWARE:
 // tourSchema.pre('aggregate', function (next) {
 //   //excluding the all secret tours to perform aggregate function

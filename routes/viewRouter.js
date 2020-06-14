@@ -1,11 +1,16 @@
+/*eslint: disable*/
+
 const express = require('express');
 const router = express.Router();
 const authController = require('./../controllers/authController');
 const viewController = require('./../controllers/viewsController')
 const bookingController = require('./../controllers/bookingController')
 
-router.get('/signup', viewController.getSignUp)
-router.get('/', bookingController.createBookingCheckout, authController.isLoggedIn, viewController.getOverview);
+router.get('/signup', viewController.getSignUp);
+router.route('/')
+    .get(bookingController.createBookingCheckout,
+        authController.isLoggedIn,
+        viewController.getOverview);
 router.get('/overview', authController.isLoggedIn, viewController.getOverview);
 router.get('/tour/:name', authController.isLoggedIn, viewController.getTour);
 router.get('/book/:id', authController.isLoggedIn, viewController.bookingForm);

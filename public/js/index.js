@@ -1,6 +1,7 @@
 import '@babel/polyfill';
 import {
-    bookTour
+    bookTour,
+    checkTourAvailability
 } from './stripe';
 import {
     checkLogin,
@@ -25,7 +26,17 @@ const userPhoto = document.querySelector('#userPhoto');
 const bookBtn = document.querySelector('#bookTour');
 const reviewBtn = document.querySelector('#saveReview');
 const signupBtn = document.querySelector('#signup');
+const confirmBookingBtn = document.querySelector('#confirmBooking');
 
+function isNumber(evt) {
+    evt = (evt) ? evt : window.event;
+    var charCode = (evt.which) ? evt.which : evt.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+        return false;
+    }
+    return true;
+}
+// onkeypress = "return isNumber(event)"
 
 if (mapBox) {
     const locations = JSON.parse(document.getElementById('map').dataset.locations);
@@ -89,8 +100,23 @@ if (bookBtn) {
         event.target.textContent = "Processing....";
         const tourID = event.target.dataset.tourid;
         location.href = `/book/${tourID}`;
-        console.log(tourID);
-        bookTour(tourID);
+        // console.log(tourID);
+        // bookTour(tourID);
+    })
+}
+
+if (confirmBookingBtn) {
+    confirmBookingBtn.addEventListener('click', async event => {
+        event.preventDefault();
+        const tourID = document.getElementById('tourID').value;
+        const members = document.getElementById('members').value;
+        const dates = document.getElementById('tourDates').value;
+        const data = {
+            tourID,
+            members,
+            dates
+        };
+        checkTourAvailability(data);
     })
 }
 if (reviewBtn) {
@@ -102,7 +128,6 @@ if (reviewBtn) {
         const review = document.getElementById(`review-${index}`).value;
         const tour = document.getElementById(`tour-${index}`).value;
         const user = document.getElementById(`user-${index}`).value;
-        // console.log(review, rating, user, tour);
         updateData({
             tour,
             user,
