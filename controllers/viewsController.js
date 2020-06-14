@@ -143,3 +143,11 @@ exports.getSignUp = (request, response, next) => {
         title: 'Welcome to Atours!'
     });
 }
+exports.bookingForm = async (request, response, next) => {
+    console.log(request.params);
+    const tours = await Tour.findById(request.params.id);
+    return response.status(200).render('account', {
+        title: 'One step, away from your tour!',
+        tours
+    });
+}

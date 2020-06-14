@@ -1,0 +1,26 @@
+extend base
+
+block content
+    main.main
+        .user-view
+            .user-view__content
+                .user-view__form-container
+                    h2.heading-secondary.ma-bt-md Your account settings
+                    each tour in tours    
+                        form.form.form-user-review
+                            .form__group
+                                label.form__label(for='Tour Name') Tour Name
+                                input#TourName.form__input(type='text', value=`${tour.name}`,required, name='tourName', readonly)
+                                input#tourDuration.form__input(type='text', value=`${tour.tourDuration}`,required, name='tourDuration', readonly)
+                                input.form__input(type='hidden', id=`tour-${i}`,value=`${tour._id}`,required, name='tour')
+                                input.form__input(type='hidden', id=`user-${i}`, value=`${user._id}`,required, name='user')
+                            .form__group    
+                                select#tourDates.form__input(value='')
+                                    each date in tour.startDates
+                                        -if(date > new Date(Date.now()))
+                                            option(value=`${date}`)=date
+                            .form__group
+                                label.form__label(for='members') Number of members
+                                input.form__input(type='number', id=`members`, required, name='member', min=1 max=`${tour.maxGroupSize}`)
+                            .form__group.right
+                                button.btn.btn--small.btn--green(id='confirmBooking') Confirm Booking

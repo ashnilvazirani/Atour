@@ -88,6 +88,7 @@ if (bookBtn) {
     bookBtn.addEventListener('click', event => {
         event.target.textContent = "Processing....";
         const tourID = event.target.dataset.tourid;
+        location.href = `/book/${tourID}`;
         console.log(tourID);
         bookTour(tourID);
     })

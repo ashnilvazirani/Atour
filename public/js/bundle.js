@@ -9008,6 +9008,7 @@ if (bookBtn) {
   bookBtn.addEventListener('click', function (event) {
     event.target.textContent = "Processing....";
     var tourID = event.target.dataset.tourid;
+    location.href = "/book/".concat(tourID);
     console.log(tourID);
     (0, _stripe.bookTour)(tourID);
   });
@@ -9078,7 +9079,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56223" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63116" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
