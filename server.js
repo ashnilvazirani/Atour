@@ -6,25 +6,25 @@ dotenv.config({
 const app = require('./app');
 //////////////////////////////////////////////////////////////////////
 // CONNECTION TO A LOCAL DB:
-mongoose.connect(process.env.DB_LOCAL, {
-  useNewUrlParser: true,
-  useCreateIndex: true,
-  useFindAndModify: false
-}).then(conn => {
-  console.log('CONNECTION DONE')
-}).catch(err => {
-  console.log(err.message)
-})
-//////////////////////////////////////////////////////////////////////
-
-// mongoose.connect(process.env.DATABASE, {
+// mongoose.connect(process.env.DB_LOCAL, {
 //   useNewUrlParser: true,
 //   useCreateIndex: true,
 //   useFindAndModify: false
 // }).then(conn => {
-//   console.log(conn.connection);
 //   console.log('CONNECTION DONE')
+// }).catch(err => {
+//   console.log(err.message)
 // })
+//////////////////////////////////////////////////////////////////////
+
+mongoose.connect(process.env.DATABASE, {
+  useNewUrlParser: true,
+  useCreateIndex: true,
+  useFindAndModify: false
+}).then(conn => {
+  console.log(conn.connection);
+  console.log('CONNECTION DONE')
+})
 
 
 // const testTour = new Tour({
