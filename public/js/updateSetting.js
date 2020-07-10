@@ -9,19 +9,20 @@ export const updateData = async (data, type) => {
         var url = "";
         var method = "";
         if (type === 'password') {
-            url = 'http://127.0.0.1:3000/api/v1/users/updatePassword';
+            url = '/api/v1/users/updatePassword';
             method = 'PATCH';
         } else if (type === 'data') {
-            url = 'http://127.0.0.1:3000/api/v1/users/updateMe';
+            url = '/api/v1/users/updateMe';
             method = 'PATCH';
         } else if (type === 'review') {
-            url = 'http://127.0.0.1:3000/api/v1/reviews';
+            url = '/api/v1/reviews';
             method = 'POST';
         } else if (type === 'signup') {
-            url = 'http://127.0.0.1:3000/api/v1/users/signup';
+            // url = 'http://127.0.0.1:3000/api/v1/users/signup';
+            url = '/api/v1/users/signup';
             method = 'POST';
         }
-        console.log(url, method);
+        // console.log(url, method);
         const res = await axios({
             method,
             url,

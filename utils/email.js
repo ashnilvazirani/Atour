@@ -65,7 +65,7 @@ module.exports = class Email {
                 console.log(error)
             }
             if (info) {
-                console.log('email sent')
+                // console.log('email sent')
                 console.log(info.response);
             }
         });

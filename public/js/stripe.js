@@ -20,21 +20,20 @@ exports.bookTour = async (tourID) => {
 
 exports.checkTourAvailability = async (data) => {
     try {
-        console.log('sending data')
         const result = await axios({
             method: 'POST',
-            url: `http://127.0.0.1:3000/api/v1/bookings/checkAvailable`,
+            url: `/api/v1/bookings/checkAvailable`,
             data
         });
-        console.log(result.data.status);
+        // console.log(result.data.status);
         if (result.data.status === 'success') {
-            console.log('booking the tour')
+            // console.log('booking the tour')
             // showAlert('success', 'Going ahead to make payment...');
             this.bookTour(data.tourID);
 
         } else if (result.data.status === 'fail') {
-            console.log('failed to book');
-            // showAlert('error', 'Cannot book this tour for you');
+            // console.log('failed to book');
+            showAlert('error', 'Cannot book this tour for you');
         }
     } catch (error) {
         console.log(error);

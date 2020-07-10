@@ -13,11 +13,11 @@ class APIFeature {
     //1A-NORMAL FILTERARTION
     const excludedData = ['page', 'sort', 'limit', 'fields'];
     excludedData.forEach((element) => delete queryObj[element]);
-    console.log(queryObj);
+    // console.log(queryObj);
     //1B-ADVANCED FILERATION: lt,lte, gt, gte
     let queryStr = JSON.stringify(queryObj);
     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
-    console.log(JSON.parse(queryStr));
+    // console.log(JSON.parse(queryStr));
 
     // const tours = await Tour.find({
     //   duration: 5
@@ -32,7 +32,7 @@ class APIFeature {
     if (this.queryString.sort) {
       //sort=pirce->ascending order && sort=-price-> descending order
       const sortBy = this.queryString.sort.split(',').join(' ');
-      console.log(sortBy);
+      // console.log(sortBy);
       this.query = this.query.sort(sortBy);
     } else {
       this.query = this.query.sort('-createdAt');
